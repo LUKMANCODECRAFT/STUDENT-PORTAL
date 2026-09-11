@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Student Academic Portal - Secure Student Authentication & Campus Management System">
+    <title>Student Academic Portal | Secure Sign In</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="auth-page">
+        <!-- Top Nav Controls -->
+        <div class="auth-brand-badge">
+            <i class="fas fa-university"></i>
+            <span>Apex University Portal</span>
+        </div>
+
+        <div class="auth-topbar">
+            <button class="theme-switch-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+                <i class="fas fa-moon"></i>
+                <span id="themeToggleLabel">Dark</span>
+            </button>
+        </div>
+
+        <div class="auth-card-wrapper">
+            <div class="auth-card">
+                <!-- Demo Accounts 1-Click Switcher -->
+                <div class="demo-accounts-box">
+                    <div class="demo-title">
+                        <span><i class="fas fa-bolt" style="color: var(--primary); margin-right: 6px;"></i> Quick Demo Login</span>
+                        <span class="badge">1-Click</span>
+                    </div>
+                    <div class="demo-pills">
+                        <button type="button" class="demo-pill-btn" onclick="quickLoginDemo('alex')">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>Alex Rivera</span>
+                            <small>CS Senior</small>
+                        </button>
+                        <button type="button" class="demo-pill-btn" onclick="quickLoginDemo('sarah')">
+                            <i class="fas fa-dna"></i>
+                            <span>Sarah Chen</span>
+                            <small>Pre-Med</small>
+                        </button>
+                        <button type="button" class="demo-pill-btn" onclick="quickLoginDemo('marcus')">
+                            <i class="fas fa-gears"></i>
+                            <span>Marcus Vance</span>
+                            <small>Engineering</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. LOGIN FORM -->
+                <div class="form-view active" id="loginFormView">
+                    <div class="auth-header">
+                        <div class="auth-icon-bubble">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h1>Welcome Back</h1>
+                        <p>Sign in to access your courses, schedule & grades</p>
+                    </div>
+
+                    <form id="loginForm" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="loginEmail">Student / Campus Email</label>
+                            <div class="input-container">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="loginEmail" class="form-input" placeholder="student@university.edu" required autocomplete="email">
+                            </div>
+                            <span class="input-error-text" id="loginEmailError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="loginPassword">Password</label>
+                            <div class="input-container">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+                                <button type="button" class="toggle-pwd-btn" data-target="loginPassword" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="input-error-text" id="loginPasswordError"></span>
+                        </div>
+
+                        <div class="form-extra-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="rememberMe" checked>
+                                <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                                <span>Remember my ID</span>
+                            </label>
+                            <button type="button" class="link-btn" onclick="switchAuthView('forgot')">Forgot Password?</button>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="loginSubmitBtn">
+                            <span>Sign In to Portal</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>or connect with university SSO</span>
+                    </div>
+
+                    <div class="social-auth-grid">
+                        <button type="button" class="btn-social-auth" onclick="handleSSOLogin('Google Workspace')">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button type="button" class="btn-social-auth" onclick="handleSSOLogin('Microsoft 365')">
+                            <i class="fab fa-microsoft"></i>
+                            Microsoft 365
+                        </button>
+                    </div>
+
+                    <div class="auth-footer-text">
+                        New student or faculty? 
+                        <button type="button" class="link-btn" onclick="switchAuthView('signup')">Create an Account</button>
+                    </div>
+                </div>
+
+                <!-- 2. REGISTRATION FORM -->
+                <div class="form-view" id="signupFormView">
+                    <div class="auth-header">
+                        <div class="auth-icon-bubble">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h1>Student Registration</h1>
+                        <p>Join the university academic network</p>
+                    </div>
+
+                    <form id="signupForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="regFirstName">First Name</label>
+                                <div class="input-container">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" id="regFirstName" class="form-input" placeholder="Jane" required>
+                                </div>
+                                <span class="input-error-text" id="regFirstNameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="regLastName">Last Name</label>
+                                <div class="input-container">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" id="regLastName" class="form-input" placeholder="Doe" required>
+                                </div>
+                                <span class="input-error-text" id="regLastNameError"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="regStudentId">Student ID</label>
+                                <div class="input-container">
+                                    <i class="fas fa-id-card input-icon"></i>
+                                    <input type="text" id="regStudentId" class="form-input" placeholder="STU-2026-89102" required>
+                                </div>
+                                <span class="input-error-text" id="regStudentIdError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="regMajor">Academic Major</label>
+                                <div class="input-container">
+                                    <i class="fas fa-book-open input-icon"></i>
+                                    <input type="text" id="regMajor" class="form-input" placeholder="Computer Science" required>
+                                </div>
+                                <span class="input-error-text" id="regMajorError"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="regEmail">University Email</label>
+                            <div class="input-container">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="regEmail" class="form-input" placeholder="j.doe@university.edu" required>
+                            </div>
+                            <span class="input-error-text" id="regEmailError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="regPassword">Create Password</label>
+                            <div class="input-container">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="regPassword" class="form-input" placeholder="At least 8 characters" required>
+                                <button type="button" class="toggle-pwd-btn" data-target="regPassword" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="strength-meter-bar">
+                                <div class="strength-meter-fill" id="pwdStrengthFill"></div>
+                            </div>
+                            <div class="pwd-criteria-list">
+                                <div class="criteria-item" id="crit-len"><i class="fas fa-circle-check"></i> 8+ Characters</div>
+                                <div class="criteria-item" id="crit-upper"><i class="fas fa-circle-check"></i> Uppercase Letter</div>
+                                <div class="criteria-item" id="crit-num"><i class="fas fa-circle-check"></i> Number (0-9)</div>
+                                <div class="criteria-item" id="crit-sym"><i class="fas fa-circle-check"></i> Symbol (!@#$)</div>
+                            </div>
+                            <span class="input-error-text" id="regPasswordError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="regConfirmPassword">Confirm Password</label>
+                            <div class="input-container">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="regConfirmPassword" class="form-input" placeholder="Re-enter password" required>
+                                <button type="button" class="toggle-pwd-btn" data-target="regConfirmPassword" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="input-error-text" id="regConfirmPasswordError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="regTerms" required>
+                                <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                                <span>I agree to the University Honor Code & Privacy Policies</span>
+                            </label>
+                            <span class="input-error-text" id="regTermsError"></span>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="signupSubmitBtn">
+                            <span>Register Student Account</span>
+                            <i class="fas fa-user-check"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer-text">
+                        Already have an account? 
+                        <button type="button" class="link-btn" onclick="switchAuthView('login')">Sign In</button>
+                    </div>
+                </div>
+
+                <!-- 3. FORGOT PASSWORD FORM -->
+                <div class="form-view" id="forgotFormView">
+                    <div class="auth-header">
+                        <div class="auth-icon-bubble">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h1>Password Recovery</h1>
+                        <p>Enter your student email and we'll send a secure reset link</p>
+                    </div>
+
+                    <form id="forgotForm" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="forgotEmail">Student Email Address</label>
+                            <div class="input-container">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="forgotEmail" class="form-input" placeholder="student@university.edu" required>
+                            </div>
+                            <span class="input-error-text" id="forgotEmailError"></span>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="forgotSubmitBtn">
+                            <span>Send Recovery Link</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer-text">
+                        Remember your password? 
+                        <button type="button" class="link-btn" onclick="switchAuthView('login')">Back to Sign In</button>
+                    </div>
+                </div>
+
+                <!-- 4. TWO-FACTOR AUTHENTICATION FORM -->
+                <div class="form-view" id="twoFactorFormView">
+                    <div class="auth-header">
+                        <div class="auth-icon-bubble">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <h1>Security Verification</h1>
+                        <p>Enter the 6-digit verification code sent to your registered device</p>
+                    </div>
+
+                    <form id="twoFactorForm" novalidate>
+                        <div class="pin-input-group" id="pinInputGroup">
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autofocus>
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*">
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*">
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*">
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*">
+                            <input type="text" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*">
+                        </div>
+                        <span class="input-error-text" id="twoFactorError" style="text-align: center;"></span>
+
+                        <div style="text-align: center; margin-bottom: 20px; font-size: 0.82rem; color: var(--text-dim);">
+                            Didn't receive code? <button type="button" class="link-btn" id="resendCodeBtn" onclick="resend2FACode()">Resend Code</button>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="twoFactorSubmitBtn">
+                            <span>Verify & Launch Portal</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer-text">
+                        <button type="button" class="link-btn" onclick="switchAuthView('login')"><i class="fas fa-arrow-left"></i> Cancel & Return to Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Student Academic Portal Dashboard - Courses, Timetable, Grades, and Campus Services">
+    <title>Student Academic Portal | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="portal-app">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="portal-sidebar" id="portalSidebar">
+            <div class="sidebar-header">
+                <a href="#overview" class="brand-logo" onclick="switchPortalTab('overview')">
+                    <div class="brand-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2>Apex University</h2>
+                        <span>Student Academic Hub</span>
+                    </div>
+                </a>
+                <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu" aria-label="Portal Navigation">
+                <div class="menu-section-label">Academic Core</div>
+                <button type="button" class="nav-item-btn active" data-tab="overview" onclick="switchPortalTab('overview')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </div>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="courses" onclick="switchPortalTab('courses')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-book"></i>
+                        <span>My Courses</span>
+                    </div>
+                    <span class="nav-badge" id="sidebarCourseCount">4</span>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="schedule" onclick="switchPortalTab('schedule')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-calendar-days"></i>
+                        <span>Timetable</span>
+                    </div>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="assignments" onclick="switchPortalTab('assignments')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-list-check"></i>
+                        <span>Assignments</span>
+                    </div>
+                    <span class="nav-badge" id="sidebarAssignmentBadge">2 Due</span>
+                </button>
+
+                <div class="menu-section-label">Services & Records</div>
+                <button type="button" class="nav-item-btn" data-tab="grades" onclick="switchPortalTab('grades')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-award"></i>
+                        <span>Grades & Transcript</span>
+                    </div>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="catalog" onclick="switchPortalTab('catalog')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-cart-plus"></i>
+                        <span>Course Registration</span>
+                    </div>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="finance" onclick="switchPortalTab('finance')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Tuition & Finance</span>
+                    </div>
+                </button>
+                <button type="button" class="nav-item-btn" data-tab="campus" onclick="switchPortalTab('campus')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-handshake-angle"></i>
+                        <span>Advisor & Campus</span>
+                    </div>
+                </button>
+
+                <div class="menu-section-label">System</div>
+                <button type="button" class="nav-item-btn" data-tab="settings" onclick="switchPortalTab('settings')">
+                    <div class="nav-item-left">
+                        <i class="fas fa-sliders"></i>
+                        <span>Settings</span>
+                    </div>
+                </button>
+            </nav>
+
+            <!-- Bottom User Profile Pill -->
+            <div class="sidebar-footer">
+                <div class="user-mini-card" onclick="switchPortalTab('settings')" title="View profile & settings">
+                    <div class="user-avatar-circle" id="sidebarUserInitials">AR</div>
+                    <div class="user-mini-details">
+                        <div class="user-mini-name" id="sidebarUserName">Alex Rivera</div>
+                        <div class="user-mini-role" id="sidebarUserMajor">CS Senior &bull; STU-2024-88492</div>
+                    </div>
+                    <i class="fas fa-ellipsis-vertical" style="color: var(--text-dim); font-size: 0.85rem;"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT VIEWPORT -->
+        <div class="portal-main">
+            <!-- TOP APP BAR -->
+            <header class="portal-header">
+                <div class="header-left">
+                    <button type="button" class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Open navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-bar-wrap">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input type="text" id="globalPortalSearch" placeholder="Search courses, instructors, tasks..." oninput="handleGlobalSearch(this.value)">
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="semester-tag">
+                        <i class="fas fa-graduation-cap" style="color: var(--primary);"></i>
+                        <span>Fall 2026 Semester</span>
+                    </div>
+
+                    <!-- Theme Switcher -->
+                    <button type="button" class="icon-action-btn" id="headerThemeToggle" title="Toggle Light/Dark Theme">
+                        <i class="fas fa-moon" id="headerThemeIcon"></i>
+                    </button>
+
+                    <!-- Notifications Dropdown Trigger -->
+                    <button type="button" class="icon-action-btn" id="notificationsBtn" onclick="toggleNotificationDrawer()" title="View Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="icon-indicator-dot"></span>
+                    </button>
+
+                    <!-- Quick Sign Out -->
+                    <button type="button" class="icon-action-btn" onclick="logoutStudent()" title="Sign Out">
+                        <i class="fas fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- NOTIFICATIONS POPOVER MODAL / DRAWER -->
+            <div class="portal-modal-overlay" id="notificationsModal">
+                <div class="portal-modal-box" style="max-width: 440px;">
+                    <div class="portal-modal-header">
+                        <h3><i class="fas fa-bell" style="color: var(--primary); margin-right: 8px;"></i> Campus Notifications</h3>
+                        <button type="button" class="portal-modal-close" onclick="toggleNotificationDrawer()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="portal-modal-body" id="notificationsListContainer">
+                        <!-- Populated via portal.js -->
+                    </div>
+                    <div class="portal-modal-footer">
+                        <button type="button" class="btn-social-auth" style="width: 100%;" onclick="markAllNotificationsRead()">Mark All as Read</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT CONTAINER -->
+            <main class="portal-content-body">
+                
+                <!-- ========================================== -->
+                <!-- 1. DASHBOARD OVERVIEW TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container active" id="tab-overview">
+                    <!-- Welcome Hero Banner -->
+                    <div class="welcome-hero-card">
+                        <div class="welcome-left">
+                            <h2>Good day, <span id="heroStudentName">Alex Rivera</span>! 👋</h2>
+                            <p>Here is your current academic performance and schedule summary for today.</p>
+                            <div class="welcome-meta-pills">
+                                <div class="meta-pill"><i class="fas fa-id-badge"></i> <span id="heroStudentId">STU-2024-88492</span></div>
+                                <div class="meta-pill"><i class="fas fa-graduation-cap"></i> <span id="heroMajor">Computer Science, B.S.</span></div>
+                                <div class="meta-pill"><i class="fas fa-star"></i> Dean's Honor List</div>
+                                <div class="meta-pill"><i class="fas fa-user-tie"></i> Advisor: Dr. Raymond Holt</div>
+                            </div>
+                        </div>
+                        <div class="welcome-right">
+                            <button type="button" class="btn-submit" style="padding: 10px 18px;" onclick="openPrintTranscriptModal()">
+                                <i class="fas fa-print"></i> Transcript
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 Stat Metric Cards -->
+                    <div class="stats-grid-4">
+                        <div class="stat-widget-card">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-label">Cumulative GPA</div>
+                                <div class="stat-value" id="statGpa">3.88</div>
+                                <div class="stat-sub">Top 5% in Department</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-widget-card">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-label">Enrolled Credits</div>
+                                <div class="stat-value" id="statCredits">16.0</div>
+                                <div class="stat-sub">4 Courses &bull; Full-Time</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-widget-card">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-label">Class Attendance</div>
+                                <div class="stat-value">97.4%</div>
+                                <div class="stat-sub">37 of 38 Sessions Attended</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-widget-card">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-clock-rotate-left"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-label">Pending Deadlines</div>
+                                <div class="stat-value" id="statDeadlines">2 Tasks</div>
+                                <div class="stat-sub">Next in 48 hours</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Two Column Dashboard Layout -->
+                    <div class="dash-layout-grid">
+                        <!-- Left Column: Classes & Urgent Assignments -->
+                        <div class="dash-col-main">
+                            <!-- Today's Schedule Card -->
+                            <div class="dash-card">
+                                <div class="dash-card-header">
+                                    <div class="dash-card-title">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <span>Today's Class Schedule</span>
+                                    </div>
+                                    <button type="button" class="link-btn" onclick="switchPortalTab('schedule')">Full Timetable &rarr;</button>
+                                </div>
+                                <div class="class-timeline" id="overviewTodayClasses">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Urgent Deadlines Card -->
+                            <div class="dash-card">
+                                <div class="dash-card-header">
+                                    <div class="dash-card-title">
+                                        <i class="fas fa-hourglass-half"></i>
+                                        <span>Upcoming Course Deadlines</span>
+                                    </div>
+                                    <button type="button" class="link-btn" onclick="switchPortalTab('assignments')">View All &rarr;</button>
+                                </div>
+                                <div id="overviewUpcomingAssignments">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Degree Progress & Quick Actions -->
+                        <div class="dash-col-side">
+                            <!-- Degree Progress Meter -->
+                            <div class="dash-card">
+                                <div class="dash-card-header">
+                                    <div class="dash-card-title">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>Degree Progression</span>
+                                    </div>
+                                </div>
+                                <div class="degree-progress-box">
+                                    <div class="progress-header-row">
+                                        <span>Graduation Credits</span>
+                                        <span id="overviewDegreeCredits">96 / 120 (80%)</span>
+                                    </div>
+                                    <div class="progress-track-bar">
+                                        <div class="progress-fill-bar" id="overviewDegreeBar" style="width: 80%;"></div>
+                                    </div>
+                                    <div style="margin-top: 14px; font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+                                        <span>Expected: Spring 2027</span>
+                                        <span>Senior Standing</span>
+                                    </div>
+                                </div>
+
+                                <div class="quick-actions-grid">
+                                    <div class="quick-action-card" onclick="switchPortalTab('catalog')">
+                                        <i class="fas fa-cart-plus"></i>
+                                        <span>Add Courses</span>
+                                    </div>
+                                    <div class="quick-action-card" onclick="switchPortalTab('grades')">
+                                        <i class="fas fa-calculator"></i>
+                                        <span>GPA Tool</span>
+                                    </div>
+                                    <div class="quick-action-card" onclick="openAdvisorModal()">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>Book Advisor</span>
+                                    </div>
+                                    <div class="quick-action-card" onclick="switchPortalTab('finance')">
+                                        <i class="fas fa-receipt"></i>
+                                        <span>Tuition Fees</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Campus News & Alerts -->
+                            <div class="dash-card">
+                                <div class="dash-card-header">
+                                    <div class="dash-card-title">
+                                        <i class="fas fa-bullhorn"></i>
+                                        <span>Campus Announcements</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.84rem;">
+                                    <div style="padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                                        <strong style="color: var(--text-main); display: block;">Annual Hackathon Registration Open</strong>
+                                        <span style="color: var(--text-muted); font-size: 0.75rem;">Deadline Sept 28 &bull; Computer Science Dept</span>
+                                    </div>
+                                    <div style="padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                                        <strong style="color: var(--text-main); display: block;">Main Library 24/7 Hours for Midterms</strong>
+                                        <span style="color: var(--text-muted); font-size: 0.75rem;">Extended quiet floor zones activated</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 2. MY COURSES TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-courses">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Enrolled Academic Courses</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Fall 2026 &bull; 4 Active Courses &bull; 16 Credit Hours</p>
+                        </div>
+                        <button type="button" class="btn-submit" style="width: auto;" onclick="switchPortalTab('catalog')">
+                            <i class="fas fa-plus"></i> Register New Course
+                        </button>
+                    </div>
+
+                    <div class="courses-grid" id="myCoursesGrid">
+                        <!-- Populated via portal.js -->
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 3. TIMETABLE & SCHEDULE TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-schedule">
+                    <div class="schedule-header">
+                        <div>
+                            <h2>Weekly Timetable & Lecture Schedule</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">View enrolled lectures and lab sections</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-social-auth" onclick="downloadCalendarICS()">
+                                <i class="fas fa-file-arrow-down"></i> Export to iCal
+                            </button>
+                            <button type="button" class="btn-submit" style="width: auto;" onclick="window.print()">
+                                <i class="fas fa-print"></i> Print Schedule
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="timetable-grid-container">
+                        <table class="timetable-table" id="timetableMatrix">
+                            <thead>
+                                <tr>
+                                    <th>Time Slot</th>
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                    <th>Thursday</th>
+                                    <th>Friday</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timetableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 4. ASSIGNMENTS & EXAMS TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-assignments">
+                    <div class="filter-bar-row">
+                        <div>
+                            <h2>Coursework & Exam Tracker</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Manage homework submissions, projects, and upcoming midterm dates</p>
+                        </div>
+
+                        <div class="filter-tabs-pills">
+                            <button type="button" class="filter-pill-btn active" onclick="filterAssignments('all', this)">All Tasks</button>
+                            <button type="button" class="filter-pill-btn" onclick="filterAssignments('pending', this)">Pending</button>
+                            <button type="button" class="filter-pill-btn" onclick="filterAssignments('submitted', this)">Submitted</button>
+                            <button type="button" class="filter-pill-btn" onclick="filterAssignments('graded', this)">Graded</button>
+                        </div>
+                    </div>
+
+                    <div class="assignments-grid" id="assignmentsGridContainer">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 5. GRADES, TRANSCRIPT & GPA SIMULATOR -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-grades">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Academic Transcript & Grades</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Official grade report, honors standing, and interactive GPA simulator</p>
+                        </div>
+                        <button type="button" class="btn-submit" style="width: auto;" onclick="openPrintTranscriptModal()">
+                            <i class="fas fa-file-pdf"></i> Download Official Transcript
+                        </button>
+                    </div>
+
+                    <div class="grades-summary-banner">
+                        <div class="grades-summary-card">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Cumulative GPA</div>
+                            <div class="big-gpa" id="gradesCumulativeGpa">3.88</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Summa Cum Laude Track</div>
+                        </div>
+                        <div class="grades-summary-card">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Major GPA</div>
+                            <div class="big-gpa" id="gradesMajorGpa">3.92</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">In Computer Science Core</div>
+                        </div>
+                        <div class="grades-summary-card">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Completed Credits</div>
+                            <div class="big-gpa" id="gradesCompletedCredits">96.0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Out of 120 Required</div>
+                        </div>
+                    </div>
+
+                    <!-- Current Semester Grade Table -->
+                    <div class="portal-table-card">
+                        <div style="padding: 14px 18px; background-color: var(--bg-input); border-bottom: 1px solid var(--border-color); font-weight: 700;">
+                            Current Term Grade Performance (Fall 2026)
+                        </div>
+                        <table class="portal-table">
+                            <thead>
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Credits</th>
+                                    <th>Score</th>
+                                    <th>Current Grade</th>
+                                    <th>Honor Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive GPA Target Simulator -->
+                    <div class="simulator-box">
+                        <div class="simulator-header">
+                            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                                <i class="fas fa-wand-magic-sparkles" style="color: var(--primary); margin-right: 8px;"></i>
+                                Interactive "What-If" GPA Target Calculator
+                            </h3>
+                            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
+                                Adjust hypothetical final grades below to immediately see your projected semester and cumulative GPA.
+                            </p>
+                        </div>
+
+                        <div id="gpaSimulatorInputs">
+                            <!-- Dynamic course inputs -->
+                        </div>
+
+                        <div class="sim-result-badge">
+                            <div>
+                                <span style="font-size: 0.8rem; opacity: 0.9; display: block;">Simulated Cumulative GPA</span>
+                                <span style="font-size: 1.6rem; font-weight: 800;" id="simulatedGpaValue">3.88</span>
+                            </div>
+                            <button type="button" class="btn-social-auth" style="background-color: var(--bg-surface); border-color: var(--border-color); color: var(--text-main);" onclick="resetGpaSimulator()">
+                                <i class="fas fa-rotate-left"></i> Reset to Actual
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 6. COURSE REGISTRATION / CATALOG TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-catalog">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Course Enrollment & Catalog</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Browse university course offerings for the upcoming term and enroll instantly</p>
+                        </div>
+                    </div>
+
+                    <div class="credit-limit-banner">
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">Enrollment Credit Load: <span id="catalogEnrolledCredits">16</span> / 18 Max Credits</strong>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Maximum allowed without Dean's permission: 18.0 credits</div>
+                        </div>
+                        <div class="meta-pill" style="color: var(--primary); font-weight: 700;">
+                            Registration Active
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div class="catalog-search-row">
+                        <div class="input-container" style="flex: 1; min-width: 250px;">
+                            <i class="fas fa-search input-icon"></i>
+                            <input type="text" id="catalogSearchInput" class="form-input" placeholder="Search by course name, code, or professor..." oninput="filterCourseCatalog()">
+                        </div>
+                        <select id="catalogDeptFilter" class="form-input" style="width: 200px;" onchange="filterCourseCatalog()">
+                            <option value="all">All Departments</option>
+                            <option value="CS">Computer Science</option>
+                            <option value="MAT">Mathematics</option>
+                            <option value="PHY">Physics</option>
+                            <option value="ENG">Engineering</option>
+                            <option value="BIO">Biology & Pre-Med</option>
+                        </select>
+                    </div>
+
+                    <div class="catalog-grid" id="courseCatalogGrid">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 7. TUITION & FINANCIALS TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-finance">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Tuition & Student Financial Services</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Fee statements, scholarship aid, payment plan, and receipts</p>
+                        </div>
+                    </div>
+
+                    <div class="finance-overview-grid">
+                        <div class="balance-hero-card">
+                            <div>
+                                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Current Account Balance</span>
+                                <div class="balance-amount" id="tuitionBalanceDisplay">$0.00</div>
+                                <p style="color: var(--text-muted); font-size: 0.82rem;">Status: <strong style="color: var(--text-main);">Paid in Full for Fall 2026</strong> &bull; Next due: Spring Term Jan 15</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 18px;">
+                                <button type="button" class="btn-submit" style="width: auto;" onclick="openPaymentModal()">
+                                    <i class="fas fa-credit-card"></i> Make Payment
+                                </button>
+                                <button type="button" class="btn-social-auth" onclick="viewRecentReceipt()">
+                                    <i class="fas fa-receipt"></i> Official Receipt
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dash-card" style="margin-bottom: 0;">
+                            <div class="dash-card-header">
+                                <div class="dash-card-title"><i class="fas fa-hand-holding-dollar"></i> Financial Aid & Scholarships</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem;">
+                                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                    <span>Presidential Academic Merit Grant</span>
+                                    <strong style="color: var(--text-main);">$6,500 / Sem</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                    <span>STEM Excellence Scholarship</span>
+                                    <strong style="color: var(--text-main);">$2,000 / Sem</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Federal Work-Study Allocation</span>
+                                    <strong style="color: var(--text-main);">$1,500 / Sem</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Itemized Statement Table -->
+                    <div class="portal-table-card">
+                        <div style="padding: 14px 18px; background-color: var(--bg-input); border-bottom: 1px solid var(--border-color); font-weight: 700;">
+                            Itemized Tuition & Fee Breakdown (Fall 2026)
+                        </div>
+                        <table class="portal-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Undergraduate Full-Time Tuition (16 Credits)</td>
+                                    <td>Tuition</td>
+                                    <td>$12,400.00</td>
+                                    <td><span style="font-weight: 700; color: var(--primary);">Covered by Aid / Paid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Science Laboratory Fee</td>
+                                    <td>Lab Fee</td>
+                                    <td>$450.00</td>
+                                    <td><span style="font-weight: 700; color: var(--primary);">Paid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Campus Technology & Library Resource Fee</td>
+                                    <td>Campus Fee</td>
+                                    <td>$320.00</td>
+                                    <td><span style="font-weight: 700; color: var(--primary);">Paid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Student Health Center & Recreation Services</td>
+                                    <td>Health & Wellness</td>
+                                    <td>$280.00</td>
+                                    <td><span style="font-weight: 700; color: var(--primary);">Paid</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 8. ADVISOR & CAMPUS SERVICES TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-campus">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Academic Advising & Campus Life</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Schedule one-on-one advising sessions with assigned academic advisors</p>
+                        </div>
+                        <button type="button" class="btn-submit" style="width: auto;" onclick="openAdvisorModal()">
+                            <i class="fas fa-calendar-plus"></i> Book Advising Session
+                        </button>
+                    </div>
+
+                    <div class="dash-card-title" style="margin-bottom: 16px;"><i class="fas fa-user-tie"></i> Assigned Academic Mentors</div>
+                    <div class="advisors-grid">
+                        <div class="advisor-card">
+                            <div class="advisor-photo"><i class="fas fa-user-doctor"></i></div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Dr. Raymond Holt</h3>
+                            <p style="font-size: 0.78rem; color: var(--primary);">Primary Academic Advisor &bull; CS Dept</p>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 12px;">Office: Turing Hall 408 &bull; r.holt@university.edu</p>
+                            <button type="button" class="btn-submit" style="padding: 7px 12px; font-size: 0.78rem;" onclick="bookSpecificAdvisor('Dr. Raymond Holt')">Book Session</button>
+                        </div>
+
+                        <div class="advisor-card">
+                            <div class="advisor-photo"><i class="fas fa-briefcase"></i></div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Prof. Elena Rostova</h3>
+                            <p style="font-size: 0.78rem; color: var(--primary);">Career & Internship Placement Specialist</p>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 12px;">Office: Career Hub 102 &bull; e.rostova@university.edu</p>
+                            <button type="button" class="btn-submit" style="padding: 7px 12px; font-size: 0.78rem;" onclick="bookSpecificAdvisor('Prof. Elena Rostova')">Book Session</button>
+                        </div>
+
+                        <div class="advisor-card">
+                            <div class="advisor-photo"><i class="fas fa-microscope"></i></div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Dr. Marcus Sterling</h3>
+                            <p style="font-size: 0.78rem; color: var(--primary);">Undergraduate Research Director</p>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 12px;">Office: Science Complex 312 &bull; m.sterling@university.edu</p>
+                            <button type="button" class="btn-submit" style="padding: 7px 12px; font-size: 0.78rem;" onclick="bookSpecificAdvisor('Dr. Marcus Sterling')">Book Session</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 9. SETTINGS TAB -->
+                <!-- ========================================== -->
+                <div class="tab-view-container" id="tab-settings">
+                    <div class="courses-header-bar">
+                        <div>
+                            <h2>Settings & Personalization</h2>
+                            <p style="color: var(--text-muted); font-size: 0.88rem;">Manage theme mode, student profile, and notification channels</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-grid">
+                        <!-- Appearance & Theme Customizer -->
+                        <div class="dash-card">
+                            <div class="dash-card-header">
+                                <div class="dash-card-title"><i class="fas fa-palette"></i> Appearance & UI Mode</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+                                <div>
+                                    <label class="form-label">Theme Mode</label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <button type="button" class="btn-social-auth" id="setDarkThemeBtn" onclick="setThemeMode('dark')">
+                                            <i class="fas fa-moon"></i> Dark Mode
+                                        </button>
+                                        <button type="button" class="btn-social-auth" id="setLightThemeBtn" onclick="setThemeMode('light')">
+                                            <i class="fas fa-sun"></i> Light Mode
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Info Editor -->
+                        <div class="dash-card">
+                            <div class="dash-card-header">
+                                <div class="dash-card-title"><i class="fas fa-user-pen"></i> Student Information</div>
+                            </div>
+                            <form id="profileUpdateForm" onsubmit="handleProfileUpdate(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="settingsFullName" class="form-input" value="Alex Rivera" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Contact Phone</label>
+                                    <input type="tel" id="settingsPhone" class="form-input" value="+1 (555) 234-8901">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Campus Address</label>
+                                    <input type="text" id="settingsAddress" class="form-input" value="Apex Tower Hall, Room 412B">
+                                </div>
+                                <button type="submit" class="btn-submit" style="width: auto;">Save Profile Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- INTERACTIVE MODALS -->
+    <!-- ====================================================================== -->
+
+    <!-- 1. Assignment Submission Modal -->
+    <div class="portal-modal-overlay" id="submitAssignmentModal">
+        <div class="portal-modal-box">
+            <div class="portal-modal-header">
+                <h3 id="submitModalTitle">Submit Coursework</h3>
+                <button type="button" class="portal-modal-close" onclick="closeModal('submitAssignmentModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="portal-modal-body">
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;" id="submitModalSubtitle">Upload your completed files for instructor grading.</p>
+                
+                <div style="border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 24px; text-align: center; background: var(--bg-input); cursor: pointer; margin-bottom: 14px;" onclick="document.getElementById('assignmentFileInput').click()">
+                    <i class="fas fa-cloud-arrow-up" style="font-size: 2rem; color: var(--primary); margin-bottom: 8px;"></i>
+                    <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">Click to Select File or Drag & Drop</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">PDF, ZIP, DOCX, or PY (Max 50MB)</div>
+                    <input type="file" id="assignmentFileInput" style="display: none;" onchange="handleFileSelected(this)">
+                    <div id="selectedFileName" style="margin-top: 8px; font-size: 0.82rem; color: var(--primary); font-weight: 700;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Comments / Submission Notes for Instructor</label>
+                    <textarea id="submissionNotes" class="form-input" rows="3" placeholder="Optional notes for instructor..."></textarea>
+                </div>
+            </div>
+            <div class="portal-modal-footer">
+                <button type="button" class="btn-social-auth" onclick="closeModal('submitAssignmentModal')">Cancel</button>
+                <button type="button" class="btn-submit" style="width: auto;" onclick="confirmAssignmentSubmission()">Confirm Submission</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Course Syllabus Viewer Modal -->
+    <div class="portal-modal-overlay" id="syllabusModal">
+        <div class="portal-modal-box" style="max-width: 650px;">
+            <div class="portal-modal-header">
+                <h3 id="syllabusModalTitle">Course Syllabus</h3>
+                <button type="button" class="portal-modal-close" onclick="closeModal('syllabusModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="portal-modal-body" id="syllabusModalContent">
+                <!-- Populated via JS -->
+            </div>
+            <div class="portal-modal-footer">
+                <button type="button" class="btn-submit" style="width: auto;" onclick="closeModal('syllabusModal')">Close Syllabus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Advisor Appointment Booking Modal -->
+    <div class="portal-modal-overlay" id="advisorModal">
+        <div class="portal-modal-box">
+            <div class="portal-modal-header">
+                <h3>Schedule Advising Session</h3>
+                <button type="button" class="portal-modal-close" onclick="closeModal('advisorModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="portal-modal-body">
+                <form id="advisorBookingForm" onsubmit="handleAdvisorBooking(event)">
+                    <div class="form-group">
+                        <label class="form-label">Selected Advisor</label>
+                        <select id="bookingAdvisorSelect" class="form-input" required>
+                            <option value="Dr. Raymond Holt">Dr. Raymond Holt (CS Department)</option>
+                            <option value="Prof. Elena Rostova">Prof. Elena Rostova (Career Guidance)</option>
+                            <option value="Dr. Marcus Sterling">Dr. Marcus Sterling (Research Director)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Preferred Date</label>
+                            <input type="date" id="bookingDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Available Time Slot</label>
+                            <select id="bookingTimeSlot" class="form-input" required>
+                                <option value="10:00 AM">10:00 AM - 10:30 AM</option>
+                                <option value="11:30 AM">11:30 AM - 12:00 PM</option>
+                                <option value="02:00 PM">02:00 PM - 02:30 PM</option>
+                                <option value="03:30 PM">03:30 PM - 04:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Topic of Discussion</label>
+                        <input type="text" id="bookingTopic" class="form-input" placeholder="e.g. Course Planning or Capstone Approval" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Confirm Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Printable Official Academic Transcript Modal -->
+    <div class="portal-modal-overlay" id="transcriptModal">
+        <div class="portal-modal-box" style="max-width: 750px; background-color: #ffffff; color: #0f172a;">
+            <div class="portal-modal-header" style="border-bottom: 2px solid #0f172a;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-university" style="font-size: 1.8rem; color: #4f46e5;"></i>
+                    <div>
+                        <h2 style="font-size: 1.2rem; font-weight: 800; color: #0f172a;">APEX UNIVERSITY</h2>
+                        <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b;">Official Student Academic Record</span>
+                    </div>
+                </div>
+                <button type="button" class="portal-modal-close" style="color: #0f172a;" onclick="closeModal('transcriptModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="portal-modal-body" id="printableTranscriptContent" style="color: #0f172a;">
+                <!-- Populated via JS -->
+            </div>
+            <div class="portal-modal-footer" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+                <button type="button" class="btn-social-auth" style="border-color: #cbd5e1; color: #0f172a;" onclick="closeModal('transcriptModal')">Close</button>
+                <button type="button" class="btn-submit" style="width: auto; background-color: #4f46e5;" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Official Document
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Tuition Payment Modal -->
+    <div class="portal-modal-overlay" id="paymentModal">
+        <div class="portal-modal-box">
+            <div class="portal-modal-header">
+                <h3>Make Student Tuition Payment</h3>
+                <button type="button" class="portal-modal-close" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="portal-modal-body">
+                <form id="tuitionPaymentForm" onsubmit="handlePaymentSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Payment Amount ($ USD)</label>
+                        <input type="number" id="paymentAmountInput" class="form-input" value="500.00" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select id="paymentMethodSelect" class="form-input">
+                            <option value="card">Credit / Debit Card (Visa, Mastercard, Amex)</option>
+                            <option value="ach">ACH Electronic Bank Transfer</option>
+                            <option value="scholarship">External Scholarship Voucher</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cardholder Name</label>
+                        <input type="text" id="paymentName" class="form-input" value="Alex Rivera" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-input" placeholder="•••• •••• •••• 4242" value="4000 1234 5678 4242" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expiry / CVC</label>
+                            <input type="text" class="form-input" placeholder="MM/YY CVC" value="12/28 888" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="paySubmitBtn">
+                        <i class="fas fa-lock"></i> Authorize & Submit Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Application Script Logic -->
+    <script src="portal.js"></script>
+</body>
+</html>
